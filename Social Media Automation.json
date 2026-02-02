@@ -1,0 +1,178 @@
+{
+  "name": "Social Media Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Content Idea Generator",
+        "formDescription": "Content idea generator will generate the new ideas from the users and help to analysis and then post",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "What are you thinking?",
+              "fieldType": "textarea",
+              "placeholder": "Enter your content idea"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        -208,
+        -48
+      ],
+      "id": "4380b8fd-b381-4ad3-998d-a759f47631a2",
+      "name": "Content Idea Generator",
+      "webhookId": "ff780f79-4d7e-4b18-b3bf-92aab4753d15"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -48,
+        128
+      ],
+      "id": "b6ebbf4f-4acd-472d-9923-03746992f36a",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "6KwGNETxowVbvmtB",
+          "name": "Google Gemini(PaLM) Api account 653"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "text": "=Topic:  {{ $json['What are you thinking?'] }}\n\nBased on this topic generate perfect and social media platoform  based caption. Don't use (*) this star symbol in the output,also caption maximum word 200-300 words .",
+        "attributes": {
+          "attributes": [
+            {
+              "name": "Facebook Caption",
+              "description": "Caption for facebook post with proper hashtags"
+            },
+            {
+              "name": "LinkedIn Caption",
+              "description": "Caption for linkedin post with proper hashtags"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        -48
+      ],
+      "id": "d1a39606-021c-49fc-82de-0312a7af155f",
+      "name": "Information Extractor"
+    },
+    {
+      "parameters": {
+        "operation": "uploadText",
+        "user": "rifat",
+        "platform": [
+          "facebook"
+        ],
+        "title": "={{ $json.output['Facebook Caption'] }}",
+        "facebookPageId": "940259819173743"
+      },
+      "type": "n8n-nodes-upload-post.uploadPost",
+      "typeVersion": 1,
+      "position": [
+        352,
+        -48
+      ],
+      "id": "b3c307d1-ea8a-41b6-a8df-6fcb1f9c6a86",
+      "name": "Facebook",
+      "credentials": {
+        "uploadPostApi": {
+          "id": "aKMVcEk0vwYI1s2V",
+          "name": "Upload Post account 133"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "uploadText",
+        "user": "rifat",
+        "platform": [
+          "linkedin"
+        ],
+        "title": "={{ $json.output['LinkedIn Caption'] }}",
+        "targetLinkedinPageId": "me"
+      },
+      "type": "n8n-nodes-upload-post.uploadPost",
+      "typeVersion": 1,
+      "position": [
+        384,
+        176
+      ],
+      "id": "86e92317-e01c-41a6-98c5-61121850e4ce",
+      "name": "LinkedIn",
+      "credentials": {
+        "uploadPostApi": {
+          "id": "aKMVcEk0vwYI1s2V",
+          "name": "Upload Post account 133"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Content Idea Generator": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Information Extractor": {
+      "main": [
+        [
+          {
+            "node": "Facebook",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "LinkedIn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "f6953949-26da-4d60-b4b0-58f44609b274",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5f00bba974abf03cb5183d4d65f8a9645a781b04770df6a7d08284fca87d50b3"
+  },
+  "id": "TfB-ybDdBYS94GPI72tV6",
+  "tags": []
+}
